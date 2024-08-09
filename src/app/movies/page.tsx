@@ -86,8 +86,13 @@ export default function MoviesPage() {
       <Container maxWidth='lg' sx={{ minHeight: '100vh' }}>
         <Grid container spacing={4} sx={{ padding: '20px' }}>
           {state.movies.map((movie) => (
-            <Grid item xs={12} sm={6} md={3} key={movie.id}>
-              <MovieCard title={movie.title} imageUrl={movie.url} year={movie.year} />
+            <Grid item xs={12} sm={6} md={3} key={movie.url}>
+              <MovieCard
+                id={movie._id}
+                title={movie.title}
+                imageUrl={movie.url}
+                year={movie.year}
+              />
             </Grid>
           ))}
         </Grid>

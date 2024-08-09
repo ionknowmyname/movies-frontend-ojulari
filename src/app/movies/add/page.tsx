@@ -71,7 +71,6 @@ export default function AddMoviePage() {
       setLoading(false);
       router.push('/movies');
     } catch (error) {
-      console.log(error);
       setAlertMessage('An unexpected error occurred');
       setAlertSeverity('error');
     }

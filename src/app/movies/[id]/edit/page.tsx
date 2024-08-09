@@ -25,7 +25,7 @@ export default function UpdateMoviePage() {
   const movieId = params.id;
 
   useEffect(() => {
-    const movieToUpdate = state.movies.find((movie) => movie.id === movieId);
+    const movieToUpdate = state.movies.find((movie) => movie._id === movieId);
     if (movieToUpdate) {
       setTitle(movieToUpdate.title);
       setYear(movieToUpdate.year.toString());
@@ -84,7 +84,6 @@ export default function UpdateMoviePage() {
       setLoading(false);
       router.push('/movies');
     } catch (error) {
-      console.log(error);
       setAlertMessage('An unexpected error occurred');
       setAlertSeverity('error');
     }
