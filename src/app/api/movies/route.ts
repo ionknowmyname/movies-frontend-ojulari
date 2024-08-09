@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getMovies, addMovie } from '@/services/moviesApi';
+
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get('authToken')?.value;
+  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+
+  const page = req.nextUrl.searchParams.get('page') ?? '1';
+  try {
+    const response = await getMovies(page, token);
+    if (response.statusCode !== 200)
+      return NextResponse.json({ message: response.message }, { status: response.statusCode });
+
+    return NextResponse.json({ ...response.data });
+  } catch (error) {
+    return NextResponse.json({ message: 'An unexpected error occurred' }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const token = req.cookies.get('authToken')?.value;
+  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const formData = await req.formData();
+    const response = await addMovie(formData, token);
+
+    if (response.statusCode !== 201) {
+      return NextResponse.json({ message: response.message }, { status: response.statusCode });
+    }
+
+    return NextResponse.json(response.data, { status: 201 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ message: 'An unexpected error occurred' }, { status: 500 });
+  }
+}

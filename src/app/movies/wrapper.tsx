@@ -8,7 +8,7 @@ interface WrapperProps {
   title: string;
 }
 
-export default function Wrapper({ children, title }: WrapperProps) {
+export default function Wrapper({ children, title }: Readonly<WrapperProps>) {
   return (
     <Fragment>
       <Header title={title} />

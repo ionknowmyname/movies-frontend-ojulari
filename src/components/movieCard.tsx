@@ -8,19 +8,19 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ imageUrl, title, year }) => {
   return (
-    <Card sx={{ maxWidth: 345, margin: 'auto' }}>
+    <Card sx={{ maxWidth: 345, margin: 'auto', backgroundColor: '#092C39', borderRadius: '8px' }}>
       <CardMedia
         component='img'
         height='280'
         image={imageUrl}
         alt={title}
-        sx={{ objectFit: 'cover' }}
+        sx={{ objectFit: 'cover', borderRadius: '8px' }}
       />
-      <CardContent sx={{ textAlign: 'center' }}>
-        <Typography variant='h6' component='div' sx={{ fontWeight: 'bold' }}>
+      <CardContent>
+        <Typography variant='body2' sx={{ color: 'white' }}>
           {title}
         </Typography>
-        <Typography variant='body2' color='textSecondary'>
+        <Typography variant='caption' color='textSecondary'>
           {year}
         </Typography>
       </CardContent>

@@ -21,13 +21,12 @@ export default function Header({ title }: Readonly<HeaderProps>) {
       <Container maxWidth='lg'>
         <Toolbar disableGutters>
           <Typography
-            variant='h4'
-            component='h4'
+            variant='h5'
+            component='h5'
             sx={{ color: 'white', flexGrow: 1, fontWeight: 'bold' }}
           >
             {title}
           </Typography>
-
           <Button
             onClick={handleLogout}
             sx={{ color: 'white', textTransform: 'none' }}

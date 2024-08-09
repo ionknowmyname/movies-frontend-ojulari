@@ -20,7 +20,17 @@ interface LogoutAction {
   type: 'LOGOUT';
 }
 
-export type Action = AddMovieAction | RemoveMovieAction | LoginAction | LogoutAction;
+interface SetMoviesAction {
+  type: 'SET_MOVIES';
+  payload: Movie[];
+}
+
+export type Action =
+  | AddMovieAction
+  | RemoveMovieAction
+  | LoginAction
+  | LogoutAction
+  | SetMoviesAction;
 
 export default function reducer(state: MoviesState, action: Action): MoviesState {
   switch (action.type) {
@@ -43,6 +53,11 @@ export default function reducer(state: MoviesState, action: Action): MoviesState
       return {
         ...state,
         token: null,
+      };
+    case 'SET_MOVIES':
+      return {
+        ...state,
+        movies: action.payload,
       };
     default:
       throw new Error('Unknown action type');

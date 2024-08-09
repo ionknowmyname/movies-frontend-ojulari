@@ -2,22 +2,22 @@
 
 import { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Typography, Container, Box, Grid } from '@mui/material';
+import { Button, Typography, Container, Box, Grid, CircularProgress } from '@mui/material';
 import { Accept, useDropzone } from 'react-dropzone';
 
 import AlertMessage from '@/components/alertMessage';
 import Image from 'next/image';
 import { MoviesContext } from '@/app/state/movieContext';
-import { addMovie } from '@/services/moviesApi';
 import Input from '@/components/input';
 import { Download } from '@mui/icons-material';
-import Wrapper from '../wrapper';
 
 export default function AddMoviePage() {
   const [title, setTitle] = useState('');
   const [year, setYear] = useState('');
   const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>('success');
   const { dispatch } = useContext(MoviesContext);
   const router = useRouter();
@@ -29,6 +29,7 @@ export default function AddMoviePage() {
       setImage(e.target?.result as string);
     };
     reader.readAsDataURL(file);
+    setFile(file);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -37,27 +38,51 @@ export default function AddMoviePage() {
   });
 
   const handleSubmit = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('year', year);
-      if (image) formData.append('image', image);
+    setLoading(true);
+    if (!title || !year || !file) {
+      setAlertMessage('Please fill in all fields.');
+      setAlertSeverity('error');
+      return;
+    }
 
-      const movie = await addMovie(formData);
-      dispatch({ type: 'ADD_MOVIE', payload: movie });
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('year', year);
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/movies', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setAlertMessage(data.message || 'Failed to add movie');
+        setAlertSeverity('error');
+        return;
+      }
+
       setAlertMessage('Movie added successfully!');
       setAlertSeverity('success');
-      setTimeout(() => {
-        router.push('/movies');
-      }, 2000);
+
+      const movie = await response.json();
+      dispatch({ type: 'ADD_MOVIE', payload: movie });
+      setLoading(false);
+      router.push('/movies');
     } catch (error) {
-      setAlertMessage('Failed to add movie. Please try again.');
+      console.log(error);
+      setAlertMessage('An unexpected error occurred');
       setAlertSeverity('error');
     }
   };
 
   const handleCancel = () => {
     router.back();
+  };
+
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
   };
 
   return (
@@ -117,6 +142,7 @@ export default function AddMoviePage() {
             />
             <Box mt={8} sx={{ display: 'flex', justifyContent: 'space-between', gap: 5 }}>
               <Button
+                disabled={loading}
                 size='large'
                 variant='outlined'
                 color='secondary'
@@ -132,6 +158,7 @@ export default function AddMoviePage() {
                 Cancel
               </Button>
               <Button
+                disabled={loading}
                 size='large'
                 variant='contained'
                 color='primary'
@@ -144,12 +171,13 @@ export default function AddMoviePage() {
                   textTransform: 'none',
                 }}
               >
-                Submit
+                {loading ? <CircularProgress size={24} sx={{ color: '#ffffff' }} /> : 'Submit'}
               </Button>
             </Box>
           </Grid>
         </Grid>
       </Box>
+      <AlertMessage message={alertMessage} severity={alertSeverity} onClose={handleCloseAlert} />
     </Container>
   );
 }

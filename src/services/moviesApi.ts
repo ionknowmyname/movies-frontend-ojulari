@@ -8,24 +8,46 @@ const axiosInstance = axios.create({
   timeout: 5000,
 });
 
-export async function getMovies(page: string): Promise<Movie[]> {
+export async function getMovies(page: string, token: string): Promise<BaseResponse<Movie[]>> {
   try {
-    const response = await axios.get(`/api/movies?page=${page}`);
+    const response = await axiosInstance.get<BaseResponse<Movie[]>>(
+      `/movie?page=${page}&limit=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error('Error fetching movies:', error);
-    return [];
+    if (axios.isAxiosError(error)) {
+      return {
+        message: error.response?.statusText ?? 'An error occurred',
+        statusCode: error.response?.status ?? 500,
+      } as BaseResponse<Movie[]>;
+    }
+    throw new Error('An unexpected error occurred');
   }
 }
 
-export async function addMovie(formData: FormData): Promise<Movie> {
-  const response = await fetch('/api/movies', {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) throw new Error('Failed to add movie');
-  return response.json();
+export async function addMovie(formData: FormData, token: string): Promise<BaseResponse<Movie>> {
+  try {
+    const response = await axiosInstance.post('/movie', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return {
+        message: error.response?.statusText ?? 'An error occurred',
+        statusCode: error.response?.status ?? 500,
+      } as BaseResponse<Movie>;
+    }
+    throw new Error('An unexpected error occurred');
+  }
 }
 
 export async function loginRequest(email: string, password: string): Promise<BaseResponse<Auth>> {
