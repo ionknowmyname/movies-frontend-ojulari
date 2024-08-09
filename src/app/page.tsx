@@ -13,6 +13,7 @@ import {
 import Container from '@mui/material/Container';
 import AlertMessage from '@/components/alertMessage';
 import { useRouter } from 'next/navigation';
+import InputControl from '@/components/inputControl';
 
 export default function Home() {
   const router = useRouter();
@@ -97,13 +98,12 @@ export default function Home() {
                   emailError ? 'Invalid email format. Please enter a valid email address.' : ''
                 }
               />
-              <Input
+              <InputControl
                 error={passwordError}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 name='password'
                 label='Password'
-                type='password'
                 fullWidth={true}
                 helperText={
                   passwordError
@@ -111,6 +111,7 @@ export default function Home() {
                     : ''
                 }
               />
+
               <FormControlLabel
                 control={
                   <Checkbox
