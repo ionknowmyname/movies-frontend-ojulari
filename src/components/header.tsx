@@ -11,9 +11,20 @@ interface HeaderProps {
 export default function Header({ title }: Readonly<HeaderProps>) {
   const router = useRouter();
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    router.push('/login');
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'GET',
+      });
+
+      if (response.ok) {
+        router.push('/');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('An error occurred during logout', error);
+    }
   };
 
   return (
