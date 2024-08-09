@@ -77,7 +77,7 @@ export async function editMovie(formData: FormData, token: string): Promise<Base
 export async function loginRequest(email: string, password: string): Promise<BaseResponse<Auth>> {
   try {
     const response = await axiosInstance.post<BaseResponse<Auth>>('/auth/login', {
-      username: email,
+      email,
       password,
     });
     return response.data;
