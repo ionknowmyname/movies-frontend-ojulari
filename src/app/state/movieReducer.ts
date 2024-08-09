@@ -16,33 +16,22 @@ interface RemoveMovieAction {
   payload: Movie;
 }
 
-interface LoginAction {
-  type: 'LOGIN';
-  payload: string;
-}
-
-interface LogoutAction {
-  type: 'LOGOUT';
-}
-
 interface SetMoviesAction {
   type: 'SET_MOVIES';
-  payload: Movie[];
+  payload: {
+    data: Movie[];
+    total: number;
+  };
 }
 
-export type Action =
-  | AddMovieAction
-  | UpdateMovieAction
-  | RemoveMovieAction
-  | LoginAction
-  | LogoutAction
-  | SetMoviesAction;
+export type Action = AddMovieAction | UpdateMovieAction | RemoveMovieAction | SetMoviesAction;
 
 export default function reducer(state: MoviesState, action: Action): MoviesState {
   switch (action.type) {
     case 'ADD_MOVIE':
       return {
         ...state,
+        total: state.movies.length + 1,
         movies: [...state.movies, action.payload],
       };
     case 'REMOVE_MOVIE':
@@ -50,20 +39,11 @@ export default function reducer(state: MoviesState, action: Action): MoviesState
         ...state,
         movies: state.movies.filter((movie) => movie.title !== action.payload.title),
       };
-    case 'LOGIN':
-      return {
-        ...state,
-        token: action.payload,
-      };
-    case 'LOGOUT':
-      return {
-        ...state,
-        token: null,
-      };
     case 'SET_MOVIES':
       return {
         ...state,
-        movies: action.payload,
+        movies: action.payload.data,
+        total: action.payload.total,
       };
     default:
       throw new Error('Unknown action type');

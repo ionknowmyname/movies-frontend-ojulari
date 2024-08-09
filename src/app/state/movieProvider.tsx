@@ -7,7 +7,7 @@ import reducer from './movieReducer';
 
 const initialState: MoviesState = {
   movies: [],
-  token: null,
+  total: 0,
 };
 
 interface MoviesProviderProps {

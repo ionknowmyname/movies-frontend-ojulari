@@ -6,8 +6,10 @@ export async function GET(req: NextRequest) {
   if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   const page = req.nextUrl.searchParams.get('page') ?? '1';
+  const limit = req.nextUrl.searchParams.get('limit') ?? '10';
+
   try {
-    const response = await getMovies(page, token);
+    const response = await getMovies(page, limit, token);
     if (response.statusCode !== 200)
       return NextResponse.json({ message: response.message }, { status: response.statusCode });
 

@@ -9,7 +9,7 @@ interface MoviesContextProps {
 
 export interface MoviesState {
   movies: Movie[];
-  token: string | null;
+  total: number;
 }
 
 export const MoviesContext = createContext<MoviesContextProps>({} as MoviesContextProps);

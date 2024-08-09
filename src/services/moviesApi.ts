@@ -8,10 +8,14 @@ const axiosInstance = axios.create({
   timeout: 5000,
 });
 
-export async function getMovies(page: string, token: string): Promise<BaseResponse<Movie[]>> {
+export async function getMovies(
+  page: string,
+  limit: string,
+  token: string
+): Promise<BaseResponse<Movie[]>> {
   try {
     const response = await axiosInstance.get<BaseResponse<Movie[]>>(
-      `/movie?page=${page}&limit=10`,
+      `/movie?page=${page}&limit=${limit}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
