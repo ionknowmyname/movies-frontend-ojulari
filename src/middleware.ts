@@ -8,6 +8,7 @@ export function middleware(req: NextRequest) {
   const { pathname, origin } = req.nextUrl;
 
   const isTokenValid = decodeToken(token);
+
   if (!isTokenValid) {
     if (pathname !== '/') {
       const loginUrl = new NextURL('/', origin);
@@ -19,6 +20,10 @@ export function middleware(req: NextRequest) {
   }
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ['/((?!_next|api/auth).*)(.+)'],
+};
 
 function decodeToken(token: string): boolean {
   try {

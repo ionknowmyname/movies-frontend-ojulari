@@ -1,4 +1,5 @@
 'use client';
+
 import { Montserrat } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
 
