@@ -6,6 +6,11 @@ interface AddMovieAction {
   payload: Movie;
 }
 
+interface UpdateMovieAction {
+  type: 'UPDATE_MOVIE';
+  payload: Movie;
+}
+
 interface RemoveMovieAction {
   type: 'REMOVE_MOVIE';
   payload: Movie;
@@ -27,6 +32,7 @@ interface SetMoviesAction {
 
 export type Action =
   | AddMovieAction
+  | UpdateMovieAction
   | RemoveMovieAction
   | LoginAction
   | LogoutAction
