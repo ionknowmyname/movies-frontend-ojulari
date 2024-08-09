@@ -116,7 +116,12 @@ export default function MoviesPage() {
             page={page}
             onChange={handlePageChange}
             color='primary'
-            size='large'
+            size='small'
+            sx={{
+              '& .MuiPaginationItem-root': {
+                borderRadius: 0,
+              },
+            }}
           />
         </Box>
       </Container>
