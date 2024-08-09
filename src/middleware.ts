@@ -22,7 +22,7 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api/auth).*)(.+)'],
+  matcher: '/',
 };
 
 function decodeToken(token: string): boolean {

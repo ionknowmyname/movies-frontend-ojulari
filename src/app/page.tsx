@@ -1,7 +1,15 @@
 'use client';
 import { useState } from 'react';
 import Input from '@/components/input';
-import { Box, Button, Checkbox, FormControlLabel, Typography, Grid } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Grid,
+  CircularProgress,
+} from '@mui/material';
 import Container from '@mui/material/Container';
 import AlertMessage from '@/components/alertMessage';
 import { useRouter } from 'next/navigation';
@@ -13,6 +21,8 @@ export default function Home() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -33,6 +43,7 @@ export default function Home() {
     setPasswordError(!isPasswordValid);
 
     if (!isEmailValid || !isPasswordValid) return;
+    setLoading(true);
 
     try {
       const res = await fetch('/api/login', {
@@ -48,8 +59,10 @@ export default function Home() {
         const { message } = await res.json();
         setErrorMessage(message || 'Login failed');
       }
-    } catch (error) {
-      setErrorMessage('An unexpected error occurred');
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +112,13 @@ export default function Home() {
                 }
               />
               <FormControlLabel
-                control={<Checkbox value='remember' color='primary' />}
+                control={
+                  <Checkbox
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    color='primary'
+                  />
+                }
                 label='Remember me'
               />
               <Button
@@ -108,8 +127,10 @@ export default function Home() {
                 fullWidth
                 variant='contained'
                 sx={{ mt: 3, mb: 2, color: '#ffffff', fontWeight: 'bold', textTransform: 'none' }}
+                disabled={loading}
+                startIcon={loading ? <CircularProgress color='inherit' size={24} /> : null}
               >
-                Login
+                {loading ? 'Logging in...' : 'Login'}
               </Button>
             </Box>
           </Box>

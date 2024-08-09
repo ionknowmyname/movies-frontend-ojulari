@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
 
   try {
     const response = await loginRequest(email, password);
-
     if (response.statusCode !== 201)
       return NextResponse.json({ message: response.message }, { status: response.statusCode });
 
