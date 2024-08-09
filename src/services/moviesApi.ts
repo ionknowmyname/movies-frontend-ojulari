@@ -54,6 +54,26 @@ export async function addMovie(formData: FormData, token: string): Promise<BaseR
   }
 }
 
+export async function editMovie(formData: FormData, token: string): Promise<BaseResponse<Movie>> {
+  try {
+    const response = await axiosInstance.put('/movie', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return {
+        message: error.response?.statusText ?? 'An error occurred',
+        statusCode: error.response?.status ?? 500,
+      } as BaseResponse<Movie>;
+    }
+    throw new Error('An unexpected error occurred');
+  }
+}
+
 export async function loginRequest(email: string, password: string): Promise<BaseResponse<Auth>> {
   try {
     const response = await axiosInstance.post<BaseResponse<Auth>>('/auth/login', {
